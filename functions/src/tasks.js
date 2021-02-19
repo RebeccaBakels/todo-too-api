@@ -41,7 +41,7 @@ exports.postTask = (req, res) => {
         done: false,
         userId: req.body.userId
     }
-    db.collection('task').add(newTask)
+    db.collection('tasks').add(newTask)
     .then(() => {
         this.getTasks(req, res)
     
