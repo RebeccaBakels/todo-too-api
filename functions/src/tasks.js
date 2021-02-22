@@ -71,7 +71,7 @@ exports.deleteTask = (req, res) => {
         res.status(400).send('Invalid Request')  
         }
     dbAuth()
-    db.collections('tasks').doc(req.params.taskId).delete()
+    db.collection('tasks').doc(req.params.taskId).delete()
     .then(() => this.getTasks(req, res))
     .catch(err => res.status(500).send('delete failed:', err))
 }
