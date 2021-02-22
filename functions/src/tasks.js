@@ -17,8 +17,11 @@ function dbAuth(){
 
 
 exports.getTasks = (req, res) => {
+    if(!req.params.userId) {
+        res.status(400).send('Invalid request')
+    }
     dbAuth()
-    db.collection('tasks').get()
+    db.collection('tasks').where('userId', '==', req.params.userId).get()
     .then(collection => {
         const taskList = collection.docs.map(doc => {
             let task = doc.data()
@@ -27,12 +30,12 @@ exports.getTasks = (req, res) => {
         })
         res.status(200).send(taskList)
     })
-    .catch(err => res.status(500).send(err))
+    .catch(err => res.status(500).send('get task failed:', err))
 }
 
 
 exports.postTask = (req, res) => {
-    if(!req.body || !req.body.item || !req.body.userId) {
+    if(!req.body || !req.body.item || !req.body.userId || !req.params.userId) {
         res.status(400).send('Invalid Request')
     }
     dbAuth()
@@ -46,13 +49,20 @@ exports.postTask = (req, res) => {
         this.getTasks(req, res)
     
     })
-    .catch(err => res.status(500).send(err))
+    .catch(err => res.status(500).send('post failed:', err))
 }
 
 
 exports.patchTask = (req, res) => {
+    if(!req.body || !req.params.taskId){
+    res.status(400).send('Invalid Request')  
+    }
     dbAuth()
-    res.status(200).send('patchTask')
+    db.collection('tasks').doc(req.params.taskId).update()
+    .then(res => {
+        this.getTasks(req, res)
+    })
+    .catch(err => res.status(500).send('update failed:', err))
 }
 
 
