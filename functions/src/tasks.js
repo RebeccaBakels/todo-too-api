@@ -17,7 +17,7 @@ function dbAuth(){
 
 
 exports.getTasks = (req, res) => {
-    if(!req.params.userId ) {
+    if(!req.params.userId) {
         res.status(400).send('Invalid request')
     }
     dbAuth()
@@ -58,7 +58,7 @@ exports.patchTask = (req, res) => {
     res.status(400).send('Invalid Request')  
     }
     dbAuth()
-    db.collection('tasks').doc(req.params.taskId).update()
+    db.collection('tasks').doc(req.params.taskId).update(req.body)
     .then(() => {
         this.getTasks(req, res)
     })
@@ -67,6 +67,11 @@ exports.patchTask = (req, res) => {
 
 
 exports.deleteTask = (req, res) => {
+    if(!req.params.userId || !req.params.taskId){
+        res.status(400).send('Invalid Request')  
+        }
     dbAuth()
-    res.status(200).send('deleteTask')
+    db.collections('tasks').doc(req.params.taskId).delete()
+    .then(() => this.getTasks(req, res))
+    .catch(err => res.status(500).send('delete failed:', err))
 }
