@@ -17,7 +17,7 @@ function dbAuth(){
 
 
 exports.getTasks = (req, res) => {
-    if(!req.params.userId) {
+    if(!req.params.userId || !req.params.taskId ) {
         res.status(400).send('Invalid request')
     }
     dbAuth()
@@ -54,7 +54,7 @@ exports.postTask = (req, res) => {
 
 
 exports.patchTask = (req, res) => {
-    if(!req.body || !req.params.taskId){
+    if(!req.body || !req.params.userId || !req.params.taskId){
     res.status(400).send('Invalid Request')  
     }
     dbAuth()
